@@ -6,13 +6,39 @@ import math
 PLAYER_STEP_SIZE = 2
 ATOM_STEP_SIZE = 3
 
+class mazemap:
+	def __init__(self, width, height, hallsize):
+		''' create map object '''
+		self.width = width
+		self.height = height
+		self.hallsize = hallsize
+		self.walls = []
+	
+	def generatewalls(self, n, len):
+		'''
+		generate map with n walls of average length len
+		(difficulty generally increasing with each)
+		'''
+		
+		#TODO: straight lines?
+		# also lol that isn't really an average length len
+		
+		for i in range(0, n):
+			(x1, y1) = (random.randint(0, self.width), random.randint(0, self.height))
+			if random.randint(0, 1):
+				(x2, y2) = (x1, random.randint(y1+len-len/10, y1+len+len/10))
+			else:
+				(x2, y2) = (random.randint(x1+len-len/10, x1+len+len/10), y1)
+			if x2 < 0:	x2 = 0
+			if y2 < 0:	y2 = 0
+			self.walls.append([x1,y1,x2,y2])
+
 class atom:
-	def __init__(self, parent, x, y):
+	def __init__(self, x, y):
 		''' initialize '''
 		self.x = x
 		self.y = y
 		self.step = ATOM_STEP_SIZE
-		self.parent = parent
 	
 	def randomwalk(self, xweight, yweight):
 		''' move in a gaussian distribution weighted towards a particular direction '''
@@ -29,12 +55,11 @@ class atom:
 		# randomwalk!
 		self.randomwalk(xweight, yweight)		
 		
-class player:
-	def __init__(self, parent, x, y):
+class walker:
+	def __init__(self, x, y):
 		self.step = PLAYER_STEP_SIZE
 		self.x = x
 		self.y = y
-		self.parent = parent
 		
 	def walk(self, x, y):
 		''' move player to new location '''
@@ -43,20 +68,4 @@ class player:
 		#error
 		self.x = x
 		self.y = y
-		
-class frame:
-	def __init__(self, atoms, player):
-		'''
-		initialize the framework
-		atoms is an array of atoms
-		player is a player object
-		'''
-		self.atoms = atoms
-		self.player = player
-		self.generatewalls()
 	
-	def generatewalls(self):
-		''' generate a random maze map '''
-		self.map = None	# actually this should be an array of something or maybe this just draws directly
-		pass # maybe there's an algorithm online?  erase lines from a grid?  with a random walk?
-		
