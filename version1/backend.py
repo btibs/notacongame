@@ -3,9 +3,6 @@
 import random
 import math
 
-PLAYER_STEP_SIZE = 2
-ATOM_STEP_SIZE = 3
-
 class mazemap:
 	def __init__(self, width, height, hallsize):
 		''' create map object '''
@@ -14,7 +11,7 @@ class mazemap:
 		self.hallsize = hallsize
 		self.walls = []
 	
-	def generatewalls(self, n, len):
+	def generateWalls(self, n, len):
 		'''
 		generate map with n walls of average length len
 		(difficulty generally increasing with each)
@@ -32,34 +29,40 @@ class mazemap:
 			if x2 < 0:	x2 = 0
 			if y2 < 0:	y2 = 0
 			self.walls.append([x1,y1,x2,y2])
+	
+	def generateBetterWalls(self, n, len):
+		''' make a path of walls and something like that '''
+		pass
 
 class atom:
-	def __init__(self, x, y):
+	def __init__(self, x, y, stepsize):
 		''' initialize '''
 		self.x = x
 		self.y = y
-		self.step = ATOM_STEP_SIZE
+		self.step = stepsize
 	
-	def randomwalk(self, xweight, yweight):
-		''' move in a gaussian distribution weighted towards a particular direction '''
-		self.x += random.gauss(0+xweight, 0.3*self.step)
-		self.y += random.gauss(0+yweight, 0.3*self.step)
+	def randomwalk(self, xpoint=None, ypoint=None):
+		''' move in a gaussian distribution weighted towards a particular direction
+		note that this assumes self.stepsize < distance to goal point '''
+		if not xpoint: xpoint = self.x
+		if not ypoint: ypoint = self.y
 		
-	def move(self):
-		''' determine how to move '''
-		xweight = yweight = 0
+		xcoeff = 1 if self.x<xpoint else -1
+		ycoeff = 1 if self.y<ypoint else -1
 		
-		# can we see the player?
-		# if so, where are they?  weight +- in that direction
+		self.x += xcoeff*random.gauss(self.step, 0.5*self.step)
+		self.y += ycoeff*random.gauss(self.step, 0.5*self.step)
 		
-		# randomwalk!
-		self.randomwalk(xweight, yweight)		
+		# make sure it's not hitting the walls
+		if self.x < 0: self.x = 0
+		if self.y < 0: self.y = 0
 		
 class walker:
-	def __init__(self, x, y):
-		self.step = PLAYER_STEP_SIZE
+	def __init__(self, x, y, stepsize):
+		self.step = stepsize
 		self.x = x
 		self.y = y
+		self.win = False
 		
 	def walk(self, x, y):
 		''' move player to new location '''

@@ -1,15 +1,24 @@
 # adjustable parameters
-CRITTER_NUM = 200
+CRITTER_NUM = 500
 CRITTER_SIZE = 5
+CRITTER_STEP_SIZE = 5
+
 PLAYER_SIZE = 10
+PLAYER_STEP_SIZE = 10
+PLAYER_START_X = 50
+PLAYER_START_Y = 50
+
 HALL_SIZE = 50
-WALL_NUM = 150
-WALL_LEN = 75
+
+WALL_NUM = 100
+WALL_LEN = 50
 WALL_WIDTH = 5
 
 # map size
 WIDTH = 800
 HEIGHT = 600
+
+UPDATE_FREQ = 120.0	# operating Hz
 
 # useful stuff
 COLORS = {	'black':	(0.0, 0.0, 0.0, 1.0),
